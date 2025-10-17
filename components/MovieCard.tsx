@@ -13,6 +13,7 @@ export default function MovieCard({ movie, onClick }: MovieCardProps) {
         alt={movie.title}
         width={300}
         height={450}
+        priority
         className="rounded-xl shadow-md"
       />
       <h2 className="mt-2 text-lg font-semibold">{movie.title}</h2>
