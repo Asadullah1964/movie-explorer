@@ -7,48 +7,58 @@ import {
   fetchLatestTrailers,
   fetchFreeToWatch,
 } from '@/lib/api';
+import Hero from '@/components/Hero';
+import SectionTitle from '@/components/SectionTitle';
 import MovieCarousel from '@/components/MovieCarousel';
 import MovieCard from '@/components/MovieCard';
-import SectionTitle from '@/components/SectionTitle';
-import Hero from '@/components/Hero';
+
+interface Movie {
+  id: number;
+  title?: string;
+  name?: string;
+  [key: string]: any;
+}
 
 export default function MoviesPage() {
-  const [trending, setTrending] = useState<any[]>([]);
-  const [popular, setPopular] = useState<any[]>([]);
-  const [trailers, setTrailers] = useState<any[]>([]);
-  const [freeToWatch, setFreeToWatch] = useState<any[]>([]);
-  const [heroBackdrop, setHeroBackdrop] = useState<string | null>(null);
+  const [trending, setTrending] = useState<Movie[]>([]);
+  const [popular, setPopular] = useState<Movie[]>([]);
+  const [trailers, setTrailers] = useState<Movie[]>([]);
+  const [freeToWatch, setFreeToWatch] = useState<Movie[]>([]);
 
   useEffect(() => {
     (async () => {
-      const [trendData, popData, trailerData, freeData] = await Promise.all([
-        fetchTrendingMovies(),
-        fetchPopularMovies(),
-        fetchLatestTrailers(),
-        fetchFreeToWatch(),
-      ]);
+      try {
+        const [trendData, popData, trailerData, freeData] = await Promise.all([
+          fetchTrendingMovies(),
+          fetchPopularMovies(),
+          fetchLatestTrailers(),
+          fetchFreeToWatch(),
+        ]);
 
-      // Compute hero backdrop from fetched trending results
-      const firstBackdrop = trendData?.results?.[0]?.backdrop_path ?? null;
-
-      setTrending(trendData?.results ?? []);
-      setPopular(popData?.results ?? []);
-      setTrailers(trailerData?.results ?? []);
-      setFreeToWatch(freeData?.results ?? []);
-      setHeroBackdrop(firstBackdrop);
+        setTrending(trendData?.results ?? []);
+        setPopular(popData?.results ?? []);
+        setTrailers(trailerData?.results ?? []);
+        setFreeToWatch(freeData?.results ?? []);
+      } catch (error) {
+        console.error('Failed to fetch movies:', error);
+      }
     })();
   }, []);
 
   return (
-    <main className="mx-auto max-w-7xl px-4 py-6 md:px-6 bg-background text-foreground">
-      {/* Show Hero as soon as backdrop is known; Hero can also handle null safely if coded with fallback */}
-      <Hero backdrop={heroBackdrop ?? undefined} />
+  <>
+    {/* Full-bleed hero sits outside the constrained main */}
+    <Hero />
 
+    {/* Constrained content starts immediately after */}
+    <main className="mx-auto max-w-7xl px-4 md:px bg-background text-foreground">
+      {/* Trending Movies */}
       <section className="mt-8 space-y-4">
         <SectionTitle title="Trending Now" />
         <MovieCarousel movies={trending} />
       </section>
 
+      {/* Popular Movies */}
       <section className="mt-10 space-y-4">
         <SectionTitle title="Popular Movies" />
         <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
@@ -58,15 +68,19 @@ export default function MoviesPage() {
         </div>
       </section>
 
+      {/* Latest Trailers */}
       <section className="mt-10 space-y-4">
         <SectionTitle title="Latest Trailers" />
         <MovieCarousel movies={trailers} />
       </section>
 
+      {/* Free to Watch */}
       <section className="mt-10 space-y-4">
         <SectionTitle title="Free to Watch" />
         <MovieCarousel movies={freeToWatch} />
       </section>
     </main>
-  );
+  </>
+);
+
 }

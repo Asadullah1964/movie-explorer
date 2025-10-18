@@ -1,8 +1,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import TrailerButton from '../../components/TrailerButton';
+import TrailerButton from '@/components/TrailerButton';
 
-// Minimal fetch helper kept inline for parity with your series page
+// Minimal fetch helper
 async function fetchJSON<T>(url: string, init?: RequestInit): Promise<T> {
   const res = await fetch(url, { cache: 'no-store', ...init });
   if (!res.ok) throw new Error(`Failed ${res.status}`);
@@ -10,15 +10,15 @@ async function fetchJSON<T>(url: string, init?: RequestInit): Promise<T> {
 }
 
 const TMDB = 'https://api.themoviedb.org/3';
-const headers = { Authorization: `Bearer ${process.env.TMDB_BEARER}` }; // v4 read access token
+const headers = { Authorization: `Bearer ${process.env.TMDB_BEARER}` }; // v4 read token
 
 async function fetchMovieDetailsFull(id: string) {
   const append = [
-    'credits',          // cast + crew
-    'videos',           // trailers/teasers
-    'recommendations',  // similar picks
-    'images',           // posters/backdrops
-    'release_dates',    // MPAA/BBFC ratings per country
+    'credits',
+    'videos',
+    'recommendations',
+    'images',
+    'release_dates',
   ].join(',');
   return fetchJSON<any>(`${TMDB}/movie/${id}?append_to_response=${append}`, { headers });
 }
@@ -28,21 +28,33 @@ function img(path?: string | null, size = 'w500', fallback = '/placeholder-poste
   return `https://image.tmdb.org/t/p/${size}${path}`;
 }
 
-export default async function MovieDetails({ params }: { params: { id: string } }) {
-  const movie = await fetchMovieDetailsFull(params.id);
+// Next.js 15: params is async in dynamic routes — must be awaited
+export default async function MovieDetails({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+
+  const movie = await fetchMovieDetailsFull(id);
 
   const title = movie.title || movie.original_title || 'Untitled';
   const year = movie.release_date ? new Date(movie.release_date).getFullYear() : '';
   const runtime = typeof movie.runtime === 'number' && movie.runtime > 0 ? `${movie.runtime}m` : '';
 
-  // Content rating (try US first, then fallback)
+  // Content rating
   let rating = '';
   const rds: any[] = movie.release_dates?.results ?? [];
-  const us = rds.find((r) => r.iso_3166_1 === 'US');
-  rating = us?.release_dates?.find((d: any) => d.certification)?.certification || '';
+  const byUS = rds.find((r) => r.iso_3166_1 === 'US')?.release_dates ?? [];
+  rating = byUS.find((d: any) => d.certification)?.certification || '';
   if (!rating) {
-    const any = rds.find((r) => (r.release_dates ?? []).some((d: any) => d.certification));
-    rating = any?.release_dates?.find((d: any) => d.certification)?.certification || '';
+    for (const region of rds) {
+      const found = (region.release_dates ?? []).find((d: any) => d.certification);
+      if (found?.certification) {
+        rating = found.certification;
+        break;
+      }
+    }
   }
 
   const genres = (movie.genres ?? []).map((g: any) => g.name).join(' • ');
@@ -75,7 +87,6 @@ export default async function MovieDetails({ params }: { params: { id: string } 
           }}
           aria-hidden
         />
-        {/* Token-aware scrim for readability */}
         <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_bottom,color-mix(in_oklab,var(--foreground)_0%,transparent),color-mix(in_oklab,var(--foreground)_28%,transparent),color-mix(in_oklab,var(--foreground)_55%,transparent))]" />
 
         <div className="mx-auto max-w-7xl px-4 py-8 md:px-6">
@@ -155,14 +166,12 @@ export default async function MovieDetails({ params }: { params: { id: string } 
                 ) : null}
               </div>
 
-              {/* Trailer button */}
+              {/* Trailer button with modal */}
               {trailer ? (
-  <div className="mt-6">
-    {/* Use local modal instead of external YouTube navigation */}
-    <TrailerButton videoKey={trailer.key} />
-  </div>
-) : null}
-
+                <div className="mt-6">
+                  <TrailerButton videoKey={trailer.key} />
+                </div>
+              ) : null}
             </div>
           </div>
         </div>
@@ -199,7 +208,7 @@ export default async function MovieDetails({ params }: { params: { id: string } 
         </section>
       ) : null}
 
-      {/* Trailers (YouTube thumbnails + links) */}
+      {/* Videos grid (kept as external links) */}
       {videos.filter((v) => v.site === 'YouTube').length ? (
         <section className="mx-auto mt-8 max-w-7xl px-4 md:px-6">
           <h2 className="text-xl font-semibold">Videos</h2>
@@ -255,7 +264,9 @@ export default async function MovieDetails({ params }: { params: { id: string } 
                   className="h-[240px] w-full object-cover"
                 />
                 <div className="p-2">
-                  <p className="line-clamp-2 text-xs font-medium">{r.title || r.original_title || '—'}</p>
+                  <p className="line-clamp-2 text-xs font-medium">
+                    {r.title || r.original_title || '—'}
+                  </p>
                   {typeof r.vote_average === 'number' ? (
                     <p className="mt-1 text-[11px] text-muted">⭐ {r.vote_average.toFixed(1)}</p>
                   ) : null}
@@ -265,6 +276,6 @@ export default async function MovieDetails({ params }: { params: { id: string } 
           </div>
         </section>
       ) : null}
-    </main>
+    </main> 
   );
 }

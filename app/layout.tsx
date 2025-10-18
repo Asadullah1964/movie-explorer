@@ -20,7 +20,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`${geistSans.variable} ${geistMono.variable} min-h-dvh antialiased bg-background text-foreground`}>
         <AppThemeProvider>
           <Navbar />
-          <main className="mx-auto max-w-7xl px-4 py-6 md:px-6">{children}</main>
+          <main className="mx-auto max-w-7xl px-4 md:px-6">{children}</main>
           <Footer />
         </AppThemeProvider>
       </body>

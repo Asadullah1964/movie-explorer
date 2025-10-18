@@ -3,35 +3,9 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-type BackdropSource =
-  | { backdrop_path?: string | null; title?: string; name?: string }
-  | string
-  | null
-  | undefined;
-
-function getBackdropUrl(backdrop?: BackdropSource) {
-  const path =
-    typeof backdrop === 'string'
-      ? backdrop
-      : backdrop && typeof backdrop === 'object'
-      ? backdrop.backdrop_path
-      : null;
-  return path ? `https://image.tmdb.org/t/p/w1280${path}` : null;
-}
-
-export default function Hero({
-  backdrop,
-  heading = 'Find your next favorite movie',
-  subheading = 'Search across popular, top‑rated, and upcoming titles.',
-}: {
-  backdrop?: BackdropSource; // optional for safer builds
-  heading?: string;
-  subheading?: string;
-}) {
+export default function Hero() {
   const router = useRouter();
   const [q, setQ] = useState('');
-
-  const bg = getBackdropUrl(backdrop);
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,59 +14,55 @@ export default function Hero({
   };
 
   return (
-    <section className="relative w-full">
-      {/* Backdrop */}
+    <section className="relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] min-h-[68vh]">
+      {/* full-bleed background */}
       <div
-        className="absolute inset-0 -z-10 bg-cover bg-center"
-        style={{
-          backgroundImage: bg
-            ? `url('${bg}')`
-            : "url('https://image.tmdb.org/t/p/w1280/7RyHsO4yDXtBv1zUU3mTpHeQ0d5.jpg')",
-        }}
         aria-hidden
+        className="absolute inset-0 z-0 bg-cover bg-center"
+        style={{ backgroundImage: "url('/hero_pic.jpg')" }}
       />
+      {/* optional overlays */}
+      <div className="absolute inset-0 z-0 bg-[radial-gradient(120%_80%_at_50%_20%,color-mix(in_oklab,transparent,transparent)_0%,color-mix(in_oklab,var(--foreground)_20%,transparent)_60%,color-mix(in_oklab,var(--foreground)_45%,transparent)_100%)]" />
 
-      {/* Theme-aware scrims */}
-      <div className="absolute inset-0 -z-10 bg-[radial-gradient(120%_80%_at_50%_20%,color-mix(in_oklab,transparent,transparent)_0%,color-mix(in_oklab,var(--foreground)_35%,transparent)_60%,color-mix(in_oklab,var(--foreground)_65%,transparent)_100%)]" />
-      <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_bottom,color-mix(in_oklab,var(--foreground)_0%,transparent),color-mix(in_oklab,var(--foreground)_28%,transparent),color-mix(in_oklab,var(--foreground)_50%,transparent))]" />
+      {/* Content: add top padding to clear the header */}
+      <div className="relative z-10 mx-auto max-w-7xl px-4 md:px-6 pt-14">
+        <div className="flex min-h-[calc(68vh-3.5rem)] flex-col items-center justify-center text-center">
+          {/* h-14 = 3.5rem; adjust if your header differs */}
+          <h1 className="max-w-3xl text-3xl font-semibold leading-tight text-foreground sm:text-4xl md:text-5xl">
+            Find your next favorite movie
+          </h1>
+          <p className="mt-3 max-w-2xl text-sm text-muted md:text-base">
+            Search across popular, top-rated, and upcoming titles.
+          </p>
 
-      {/* Content */}
-      <div className="mx-auto flex min-h-[68vh] max-w-7xl flex-col items-center justify-center px-4 text-center md:px-6">
-        <h1 className="max-w-3xl text-3xl font-semibold leading-tight text-foreground sm:text-4xl md:text-5xl">
-          {heading}
-        </h1>
-        <p className="mt-3 max-w-2xl text-sm text-muted md:text-base">
-          {subheading}
-        </p>
-
-        {/* Search form */}
-        <form onSubmit={onSubmit} role="search" className="mt-6 w-full max-w-2xl">
-          <div className="relative">
-            <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-muted">
-              <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <circle cx="11" cy="11" r="7" strokeWidth="2" />
-                <path d="M20 20l-3.5-3.5" strokeWidth="2" />
-              </svg>
-            </span>
-            <input
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
-              placeholder="Search movies, TV shows, people..."
-              className="w-full rounded-xl border border-token bg-surface/80 py-3 pl-10 pr-28 text-sm text-foreground placeholder:text-muted outline-none ring-0 backdrop-blur focus:border-token focus:ring-0"
-            />
-            <button
-              type="submit"
-              className="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg border border-token bg-surface px-4 py-2 text-sm font-medium text-foreground shadow hover:bg-surface/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-token"
-            >
-              Search
-            </button>
-          </div>
-          <p className="mt-2 text-xs text-muted">Try “Inception”, “Dune”, “Dark Knight”.</p>
-        </form>
+          {/* search form */}
+          <form onSubmit={onSubmit} role="search" className="mt-6 w-full max-w-2xl">
+            <div className="relative">
+              <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-muted">
+                <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <circle cx="11" cy="11" r="7" strokeWidth="2" />
+                  <path d="M20 20l-3.5-3.5" strokeWidth="2" />
+                </svg>
+              </span>
+              <input
+                value={q}
+                onChange={(e) => setQ(e.target.value)}
+                placeholder="Search movies..."
+                className="w-full rounded-xl border border-token bg-surface/80 py-3 pl-10 pr-28 text-sm text-foreground placeholder:text-muted outline-none ring-0 backdrop-blur focus:border-token"
+              />
+              <button
+                type="submit"
+                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg border border-token bg-surface px-4 py-2 text-sm font-medium text-foreground shadow hover:bg-surface/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-token"
+              >
+                Search
+              </button>
+            </div>
+            <p className="mt-2 text-xs text-muted">Try “Inception”, “Dune”, “Dark Knight”.</p>
+          </form>
+        </div>
       </div>
 
-      {/* Bottom blend */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-[linear-gradient(to_bottom,transparent,var(--background))]" />
+      {/* optional bottom blend removed for a cleaner look */}
     </section>
   );
 }
