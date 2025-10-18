@@ -10,7 +10,7 @@ import {
 import MovieCarousel from '@/components/MovieCarousel';
 import MovieCard from '@/components/MovieCard';
 import SectionTitle from '@/components/SectionTitle';
-import Hero from '@/components/HeroSection';
+import Hero from '@/components/Hero';
 
 export default function MoviesPage() {
   const [trending, setTrending] = useState<any[]>([]);
@@ -36,7 +36,6 @@ export default function MoviesPage() {
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-6 md:px-6 bg-background text-foreground">
-      <Hero />
 
       <section className="mt-8 space-y-4">
         <SectionTitle title="Trending Now" />

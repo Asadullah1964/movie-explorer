@@ -11,7 +11,6 @@ const NAV: NavItem[] = [
   { label: 'Movies', href: '/' },
   { label: 'TV Shows', href: '/tv' },
   { label: 'Series', href: '/series' },
-  { label: 'Search', href: '/search' },
 ];
 
 function useDebounced(cb: (v: string) => void, delay = 400) {
