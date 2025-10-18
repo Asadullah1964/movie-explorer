@@ -5,10 +5,17 @@ import { useState } from 'react';
 
 type BackdropSource =
   | { backdrop_path?: string | null; title?: string; name?: string }
-  | string;
+  | string
+  | null
+  | undefined;
 
-function getBackdropUrl(backdrop: BackdropSource) {
-  const path = typeof backdrop === 'string' ? backdrop : backdrop?.backdrop_path;
+function getBackdropUrl(backdrop?: BackdropSource) {
+  const path =
+    typeof backdrop === 'string'
+      ? backdrop
+      : backdrop && typeof backdrop === 'object'
+      ? backdrop.backdrop_path
+      : null;
   return path ? `https://image.tmdb.org/t/p/w1280${path}` : null;
 }
 
@@ -17,7 +24,7 @@ export default function Hero({
   heading = 'Find your next favorite movie',
   subheading = 'Search across popular, top‑rated, and upcoming titles.',
 }: {
-  backdrop: BackdropSource;
+  backdrop?: BackdropSource; // optional for safer builds
   heading?: string;
   subheading?: string;
 }) {
@@ -36,7 +43,7 @@ export default function Hero({
     <section className="relative w-full">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 -z-10 bg-center bg-cover"
+        className="absolute inset-0 -z-10 bg-cover bg-center"
         style={{
           backgroundImage: bg
             ? `url('${bg}')`
@@ -51,7 +58,6 @@ export default function Hero({
 
       {/* Content */}
       <div className="mx-auto flex min-h-[68vh] max-w-7xl flex-col items-center justify-center px-4 text-center md:px-6">
-        {/* Title + subheading now use tokens */}
         <h1 className="max-w-3xl text-3xl font-semibold leading-tight text-foreground sm:text-4xl md:text-5xl">
           {heading}
         </h1>
@@ -59,7 +65,7 @@ export default function Hero({
           {subheading}
         </p>
 
-        {/* Search form fully tokenized */}
+        {/* Search form */}
         <form onSubmit={onSubmit} role="search" className="mt-6 w-full max-w-2xl">
           <div className="relative">
             <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-muted">
@@ -72,7 +78,7 @@ export default function Hero({
               value={q}
               onChange={(e) => setQ(e.target.value)}
               placeholder="Search movies, TV shows, people..."
-              className="w-full rounded-xl border border-token bg-surface/80 pl-10 pr-28 py-3 text-sm text-foreground placeholder:text-muted outline-none ring-0 backdrop-blur focus:border-token focus:ring-0"
+              className="w-full rounded-xl border border-token bg-surface/80 py-3 pl-10 pr-28 text-sm text-foreground placeholder:text-muted outline-none ring-0 backdrop-blur focus:border-token focus:ring-0"
             />
             <button
               type="submit"
@@ -85,7 +91,7 @@ export default function Hero({
         </form>
       </div>
 
-      {/* Fade into the page background token */}
+      {/* Bottom blend */}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-[linear-gradient(to_bottom,transparent,var(--background))]" />
     </section>
   );

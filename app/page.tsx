@@ -17,6 +17,7 @@ export default function MoviesPage() {
   const [popular, setPopular] = useState<any[]>([]);
   const [trailers, setTrailers] = useState<any[]>([]);
   const [freeToWatch, setFreeToWatch] = useState<any[]>([]);
+  const [heroBackdrop, setHeroBackdrop] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -27,15 +28,21 @@ export default function MoviesPage() {
         fetchFreeToWatch(),
       ]);
 
+      // Compute hero backdrop from fetched trending results
+      const firstBackdrop = trendData?.results?.[0]?.backdrop_path ?? null;
+
       setTrending(trendData?.results ?? []);
       setPopular(popData?.results ?? []);
       setTrailers(trailerData?.results ?? []);
       setFreeToWatch(freeData?.results ?? []);
+      setHeroBackdrop(firstBackdrop);
     })();
   }, []);
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-6 md:px-6 bg-background text-foreground">
+      {/* Show Hero as soon as backdrop is known; Hero can also handle null safely if coded with fallback */}
+      <Hero backdrop={heroBackdrop ?? undefined} />
 
       <section className="mt-8 space-y-4">
         <SectionTitle title="Trending Now" />
