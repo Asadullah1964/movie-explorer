@@ -21,13 +21,12 @@ export default function Hero() {
         className="absolute inset-0 z-0 bg-cover bg-center"
         style={{ backgroundImage: "url('/hero_pic.jpg')" }}
       />
-      {/* optional overlays */}
+      {/* optional overlay for readability */}
       <div className="absolute inset-0 z-0 bg-[radial-gradient(120%_80%_at_50%_20%,color-mix(in_oklab,transparent,transparent)_0%,color-mix(in_oklab,var(--foreground)_20%,transparent)_60%,color-mix(in_oklab,var(--foreground)_45%,transparent)_100%)]" />
 
-      {/* Content: add top padding to clear the header */}
+      {/* content */}
       <div className="relative z-10 mx-auto max-w-7xl px-4 md:px-6 pt-14">
         <div className="flex min-h-[calc(68vh-3.5rem)] flex-col items-center justify-center text-center">
-          {/* h-14 = 3.5rem; adjust if your header differs */}
           <h1 className="max-w-3xl text-3xl font-semibold leading-tight text-foreground sm:text-4xl md:text-5xl">
             Find your next favorite movie
           </h1>
@@ -61,8 +60,6 @@ export default function Hero() {
           </form>
         </div>
       </div>
-
-      {/* optional bottom blend removed for a cleaner look */}
     </section>
   );
 }

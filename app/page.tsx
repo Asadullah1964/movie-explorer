@@ -51,7 +51,7 @@ export default function MoviesPage() {
     <Hero />
 
     {/* Constrained content starts immediately after */}
-    <main className="mx-auto max-w-7xl px-4 md:px bg-background text-foreground">
+    <main className="mx-auto max-w-7xl px-4 md:px-6 bg-background text-foreground">
       {/* Trending Movies */}
       <section className="mt-8 space-y-4">
         <SectionTitle title="Trending Now" />

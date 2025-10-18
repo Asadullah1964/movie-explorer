@@ -91,7 +91,7 @@ export default function VideoModal({
                 src={`https://www.youtube.com/embed/${videoKey}?autoplay=1&rel=0&modestbranding=1&playsinline=1`}
                 allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
-                className="absolute inset-0 h-full w-full"
+                className="asolute inset-0 h-full w-full"
               />
             ) : (
               <div className="absolute inset-0 flex items-center justify-center text-muted">
