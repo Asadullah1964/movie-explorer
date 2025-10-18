@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
@@ -18,11 +19,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} min-h-dvh antialiased bg-background text-foreground`}>
-        <AppThemeProvider>
-          <Navbar />
-          <main className="mx-auto max-w-7xl px-4 md:px-6">{children}</main>
-          <Footer />
-        </AppThemeProvider>
+        {/* Wrap client subtree so client hooks like useSearchParams are inside a Suspense boundary */}
+        <Suspense fallback={null}>
+          <AppThemeProvider>
+            <Navbar />
+            <main className="mx-auto max-w-7xl px-4 md:px-6">{children}</main>
+            <Footer />
+          </AppThemeProvider>
+        </Suspense>
       </body>
     </html>
   );
