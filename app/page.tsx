@@ -46,41 +46,40 @@ export default function MoviesPage() {
   }, []);
 
   return (
-  <>
-    {/* Full-bleed hero sits outside the constrained main */}
-    <Hero />
+    <>
+      {/* Full-bleed hero with default image */}
+      <Hero />
 
-    {/* Constrained content starts immediately after */}
-    <main className="mx-auto max-w-7xl px-4 md:px-6 bg-background text-foreground">
-      {/* Trending Movies */}
-      <section className="mt-8 space-y-4">
-        <SectionTitle title="Trending Now" />
-        <MovieCarousel movies={trending} />
-      </section>
+      {/* Constrained content starts */}
+      <main className="mx-auto max-w-7xl px-4 md:px-6 bg-background text-foreground">
+        {/* Trending Movies */}
+        <section className="mt-8 space-y-4">
+          <SectionTitle title="Trending Now" />
+          <MovieCarousel movies={trending} />
+        </section>
 
-      {/* Popular Movies */}
-      <section className="mt-10 space-y-4">
-        <SectionTitle title="Popular Movies" />
-        <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-          {popular.map((movie) => (
-            <MovieCard key={movie.id} movie={movie} />
-          ))}
-        </div>
-      </section>
+        {/* Popular Movies */}
+        <section className="mt-10 space-y-4">
+          <SectionTitle title="Popular Movies" />
+          <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+            {popular.map((movie) => (
+              <MovieCard key={movie.id} movie={movie} />
+            ))}
+          </div>
+        </section>
 
-      {/* Latest Trailers */}
-      <section className="mt-10 space-y-4">
-        <SectionTitle title="Latest Trailers" />
-        <MovieCarousel movies={trailers} />
-      </section>
+        {/* Latest Trailers */}
+        <section className="mt-10 space-y-4">
+          <SectionTitle title="Latest Trailers" />
+          <MovieCarousel movies={trailers} />
+        </section>
 
-      {/* Free to Watch */}
-      <section className="mt-10 space-y-4">
-        <SectionTitle title="Free to Watch" />
-        <MovieCarousel movies={freeToWatch} />
-      </section>
-    </main>
-  </>
-);
-
+        {/* Free to Watch */}
+        <section className="mt-10 space-y-4">
+          <SectionTitle title="Free to Watch" />
+          <MovieCarousel movies={freeToWatch} />
+        </section>
+      </main>
+    </>
+  );
 }
