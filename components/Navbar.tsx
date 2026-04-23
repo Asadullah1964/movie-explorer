@@ -1,5 +1,6 @@
 'use client';
 
+import { signOut, useSession } from "next-auth/react";
 import ThemeToggle from '@/app/_components/ThemeToggle';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -14,6 +15,7 @@ const NAV: NavItem[] = [
   { label: 'Series', href: '/series' },
 ];
 
+
 function isActive(pathname: string, href: string, exact?: boolean) {
   const base = href.split('?')[0];
   if (exact) return pathname === base;
@@ -23,6 +25,7 @@ function isActive(pathname: string, href: string, exact?: boolean) {
 
 export default function Navbar() {
   const pathname = usePathname();
+  const { data: session } = useSession();
 
   // Mobile dropdown
   const [open, setOpen] = useState(false);
@@ -105,8 +108,25 @@ export default function Navbar() {
           </div>
 
           {/* Right actions */}
+          {/* Right actions */}
           <div className="flex items-center gap-2">
             <ThemeToggle />
+
+            {session ? (
+              <button
+                onClick={() => signOut({ callbackUrl: "/login" })}
+                className="rounded-md border border-token px-3 py-1.5 text-sm hover:bg-surface"
+              >
+                Logout
+              </button>
+            ) : (
+              <Link
+                href="/login"
+                className="rounded-md border border-token px-3 py-1.5 text-sm hover:bg-surface"
+              >
+                Login
+              </Link>
+            )}
           </div>
         </nav>
       </div>
@@ -150,11 +170,12 @@ export default function Navbar() {
               <div className="mt-3">
                 <SearchBar size="sm" className="hidden md:block" placeholder="Search movies..." />
 
-{/* mobile inside panel */}
-<div className="mt-3">
-  <SearchBar size="sm" placeholder="Search movies..." />
-</div>
+                {/* mobile inside panel */}
+                <div className="mt-3">
+                  <SearchBar size="sm" placeholder="Search movies..." />
+                </div>
               </div>
+
             </nav>
           </div>
         </div>

@@ -152,20 +152,24 @@ export async function fetchTVPaged(
 }
 
 // Series helpers (alias to TV)
-export async function fetchTrendingSeries() {
-  return safeFetch<{ results: TV[] }>(`${BASE_URL}/trending/tv/week?api_key=${API_KEY}`).then(d => d.results);
+export async function fetchTrendingSeries(page = 1) {
+  const res = await fetch(`${BASE_URL}/trending/tv/week?api_key=${API_KEY}&page=${page}`);
+  return res.json();
 }
-export async function fetchPopularSeries() {
-  return safeFetch<{ results: TV[] }>(`${BASE_URL}/tv/popular?api_key=${API_KEY}`).then(d => d.results);
+
+export async function fetchPopularSeries(page = 1) {
+  const res = await fetch(`${BASE_URL}/tv/popular?api_key=${API_KEY}&page=${page}`);
+  return res.json();
 }
-export async function fetchTopRatedSeries() {
-  return safeFetch<{ results: TV[] }>(`${BASE_URL}/tv/top_rated?api_key=${API_KEY}`).then(d => d.results);
+
+export async function fetchTopRatedSeries(page = 1) {
+  const res = await fetch(`${BASE_URL}/tv/top_rated?api_key=${API_KEY}&page=${page}`);
+  return res.json();
 }
-export async function fetchOnTheAirSeries() {
-  return safeFetch<{ results: TV[] }>(`${BASE_URL}/tv/on_the_air?api_key=${API_KEY}`).then(d => d.results);
-}
-export async function fetchSeriesDetails(id: string) {
-  return safeFetch(`${BASE_URL}/tv/${id}?api_key=${API_KEY}`);
+
+export async function fetchOnTheAirSeries(page = 1) {
+  const res = await fetch(`${BASE_URL}/tv/on_the_air?api_key=${API_KEY}&page=${page}`);
+  return res.json();
 }
 
 
