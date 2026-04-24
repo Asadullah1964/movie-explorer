@@ -19,7 +19,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Movie Explorer',
+  title: 'VistaFlix',
   description: 'Discover and explore popular movies easily',
   icons: { icon: '/favicon.ico' },
 };
@@ -28,7 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} min-h-dvh antialiased bg-background text-foreground`}>
-        
+
         <Providers>
           <Suspense fallback={null}>
             <Navbar />

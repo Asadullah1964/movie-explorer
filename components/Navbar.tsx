@@ -73,7 +73,7 @@ export default function Navbar() {
 
           {/* Brand */}
           <Link href="/" className="shrink-0 text-sm font-semibold tracking-tight text-foreground">
-            Movie Explorer
+            VistaFlix
           </Link>
 
           {/* Desktop nav */}
